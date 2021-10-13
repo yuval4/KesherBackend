@@ -6,7 +6,7 @@ const objectId = mongoose.Types.ObjectId;
 
 const createNewUser = async (data, role) => {
     const password = Math.random().toString(36).substring(7);
-    mailService.sendWelcomeMail(data.email, data.parentFirstName, password);
+    mailService.sendWelcomeMail(data.email, data.fisrtName, password);
 
     let user = new User({
         name: {
