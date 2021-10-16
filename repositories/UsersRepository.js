@@ -16,7 +16,17 @@ const getUserByEmailAndPassword = async (email, password) => {
     );
 };
 
+const addSchoolToUserById = async (userId, schoolId) => {
+    return await User.findOneAndUpdate(
+        {
+            _id: new objectId(userId),
+        },
+        { $push: { schools: new objectId(schoolId) } }
+    );
+};
+
 module.exports = {
     findUserById,
     getUserByEmailAndPassword,
+    addSchoolToUserById,
 };
