@@ -4,14 +4,14 @@ const { Report } = require("../models/ReportModel");
 const objectId = mongoose.Types.ObjectId;
 
 const createDailyReport = async (ids) => {
-    await ids.forEach(async (id) => {
-        let report = new Report({
+    reports = ids.map((childId) => {
+        return {
             date: new Date(),
-            child: new objectId(id),
+            child: new objectId(childId),
             attendance: false,
-        });
-        report = await report.save();
+        };
     });
+    await Report.create(reports);
 };
 
 const getChildReports = async (id) => {

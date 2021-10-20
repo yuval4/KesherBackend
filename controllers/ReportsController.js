@@ -18,8 +18,8 @@ router.post("/attendances", verifyTeacher, async (req, res) => {
     res.send(childrenAttendance);
 });
 
-// TODO
 router.post("/newreport", async (req, res) => {
+    console.log("--------------New Report---------------");
     await ReportsService.createDailyReport([req.params.id]);
     res.sendStatus(200);
 });

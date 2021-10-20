@@ -19,7 +19,6 @@ const userSchema = new Schema({
     },
     address: {
         type: adressSchema,
-        required: true,
     },
     // "Parent", "Teacher", "Admin", "Therapist"
     role: {
