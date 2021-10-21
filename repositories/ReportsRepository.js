@@ -17,7 +17,9 @@ const getChildrenAttendanceByChildernIds = async (ids) => {
 const getChildReportsById = async (id) => {
     return await Report.find({
         child: { $in: id },
-    }).populate("comments.creator", "name role");
+    })
+        .populate("comments.creator", "name role")
+        .sort({ _id: -1 });
 };
 
 const updateAttendanceByChildId = async (id, attendance) => {

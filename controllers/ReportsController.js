@@ -19,7 +19,6 @@ router.post("/attendances", verifyTeacher, async (req, res) => {
 });
 
 router.post("/newreport/:id", async (req, res) => {
-    console.log("--------------New Report---------------");
     await ReportsService.createDailyReport([req.params.id]);
     res.sendStatus(200);
 });
