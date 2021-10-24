@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const objectId = mongoose.Types.ObjectId;
 
 const findUserById = async (id) => {
-    return await User.findById(id, "name children schools role")
+    return await User.findById(id, "name children schools role email")
         .populate("children", "name school profilePic")
         .populate("schools", "name")
         .lean();
@@ -25,8 +25,19 @@ const addSchoolToUserById = async (userId, schoolId) => {
     );
 };
 
+const changePassword = async (newPassword, userId) => {
+    console.log(newPassword, userId);
+    await User.findOneAndUpdate(
+        {
+            _id: new objectId(userId),
+        },
+        { password: newPassword }
+    );
+};
+
 module.exports = {
     findUserById,
     getUserByEmailAndPassword,
     addSchoolToUserById,
+    changePassword,
 };

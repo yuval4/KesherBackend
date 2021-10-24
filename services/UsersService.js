@@ -45,8 +45,26 @@ const getUserById = async (id) => {
     return await UsersRepository.findUserById(id);
 };
 
+const changePassword = async (passwords, user) => {
+    const userInfo = await UsersRepository.findUserById(user.id);
+    const isUser = await UsersRepository.getUserByEmailAndPassword(
+        userInfo.email,
+        passwords.oldPassword
+    );
+
+    if (
+        isUser &&
+        user.role === userInfo.role &&
+        user.id == userInfo._id &&
+        passwords.newPassword === passwords.newPasswordAgain
+    ) {
+        await UsersRepository.changePassword(passwords.newPassword, user.id);
+    }
+};
+
 module.exports = {
     createNewUser,
     getUserByEmailAndPassword,
     getUserById,
+    changePassword,
 };

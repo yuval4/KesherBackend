@@ -28,4 +28,9 @@ router.patch("/school", async (req, res) => {
     return res.sendStatus(200);
 });
 
+router.patch("/password", async (req, res) => {
+    await UsersService.changePassword(req.body, req.user);
+    return res.sendStatus(200);
+});
+
 module.exports = router;
