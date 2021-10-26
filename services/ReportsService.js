@@ -18,6 +18,10 @@ const getChildReports = async (id) => {
     return await ReportsRepository.getChildReportsById(id);
 };
 
+const getChildLatestReport = async (id) => {
+    return await ReportsRepository.getChildLatestReportById(id);
+};
+
 const updateChildAttendance = async (id, attendance) => {
     await ReportsRepository.updateAttendanceByChildId(id, attendance);
 };
@@ -80,6 +84,7 @@ module.exports = {
     updateChildAttendance,
     addSubReportToReport,
     getChildReports,
+    getChildLatestReport,
     addCommentToReport,
     addImageToReport,
 };

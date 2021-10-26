@@ -12,6 +12,11 @@ router.get("/:id", async (req, res) => {
     res.send(reports);
 });
 
+router.get("/latestreport/:id", async (req, res) => {
+    const report = await ReportsService.getChildLatestReport(req.params.id);
+    res.send(report);
+});
+
 router.post("/attendances", verifyTeacher, async (req, res) => {
     const childrenAttendance =
         await ReportsService.getAndCreateChildrenAttendance(req.body.ids);
@@ -31,7 +36,6 @@ router.patch("/child/:id", async (req, res) => {
     res.sendStatus(200);
 });
 
-// TODO
 router.patch("/subreport/:id", async (req, res) => {
     console.log(req.params.id, req.body.subReports);
     await ReportsService.addSubReportToReport(

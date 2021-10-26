@@ -26,7 +26,6 @@ const addSchoolToUserById = async (userId, schoolId) => {
 };
 
 const changePassword = async (newPassword, userId) => {
-    console.log(newPassword, userId);
     await User.findOneAndUpdate(
         {
             _id: new objectId(userId),
@@ -35,9 +34,33 @@ const changePassword = async (newPassword, userId) => {
     );
 };
 
+const findUsersBySchoolId = async (schoolId) => {
+    return await User.find(
+        {
+            schools: {
+                $in: [objectId(schoolId)],
+            },
+        },
+        "name profilePic role"
+    );
+};
+
+const findAllStaffs = async () => {
+    return await User.find(
+        {
+            role: {
+                $in: ["Teacher"],
+            },
+        },
+        "name profilePic role"
+    );
+};
+
 module.exports = {
     findUserById,
     getUserByEmailAndPassword,
     addSchoolToUserById,
     changePassword,
+    findUsersBySchoolId,
+    findAllStaffs,
 };

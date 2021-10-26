@@ -22,6 +22,14 @@ const getChildReportsById = async (id) => {
         .sort({ _id: -1 });
 };
 
+const getChildLatestReportById = async (id) => {
+    return await Report.findOne({
+        child: { $in: id },
+    })
+        .populate("comments.creator", "name role")
+        .sort({ _id: -1 });
+};
+
 const updateAttendanceByChildId = async (id, attendance) => {
     return await Report.findOneAndUpdate(
         {
@@ -67,4 +75,5 @@ module.exports = {
     getChildReportsById,
     addCommentToReportByReportId,
     addImageToReportByReportId,
+    getChildLatestReportById,
 };

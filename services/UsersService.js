@@ -62,9 +62,24 @@ const changePassword = async (passwords, user) => {
     }
 };
 
+const getUsersBySchoolId = async (schoolId) => {
+    return await UsersRepository.findUsersBySchoolId(schoolId);
+};
+
+const getAllstaffs = async () => {
+    return await UsersRepository.findAllStaffs();
+};
+
+const addSchoolToUser = async (userId, schoolId) => {
+    return await UsersRepository.addSchoolToUserById(userId, schoolId);
+};
+
 module.exports = {
     createNewUser,
     getUserByEmailAndPassword,
     getUserById,
     changePassword,
+    getUsersBySchoolId,
+    getAllstaffs,
+    addSchoolToUser,
 };
