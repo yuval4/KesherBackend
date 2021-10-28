@@ -11,10 +11,14 @@ router.get("/:id", async (req, res) => {
     res.send(child);
 });
 
-router.post("/", upload.single("photo"), async (req, res) => {
-    req.body.profilePic = req.file.path;
+router.post("/", async (req, res) => {
     const childId = await ChildrenService.createNewChild(req.body);
     res.send(childId);
+});
+
+router.patch("/photo", upload.single("photo"), async (req, res) => {
+    await ChildrenService.updateChildPhoto(req.file.path, req.body.childId);
+    res.sendStatus(200);
 });
 
 module.exports = router;

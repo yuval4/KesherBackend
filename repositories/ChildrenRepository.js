@@ -6,10 +6,13 @@ const getNameAndPicById = async (id) => {
     return await Child.findById(new objectId(id), "name profilePic");
 };
 
-// NOTE what did we do on this function?
-const setNewChild = async (data) => {
-    // return await Child.findById(new objectId(id), "name profilePic");
-    console.log(repo);
+const updateChildProfilePicById = async (photo, childId) => {
+    await Child.findOneAndUpdate(
+        {
+            _id: new objectId(childId),
+        },
+        { profilePic: photo }
+    );
 };
 
-module.exports = { getNameAndPicById, setNewChild };
+module.exports = { getNameAndPicById, updateChildProfilePicById };

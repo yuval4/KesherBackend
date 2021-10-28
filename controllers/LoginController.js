@@ -6,7 +6,7 @@ const UsersService = require("../services/UsersService");
 
 router.get("/hello", (req, res) => {
     console.log("hello!!");
-    mailService.sendWelcomeMail("didi19289@gmail.com", "יובל", "password");
+    // mailService.sendWelcomeMail("didi19289@gmail.com", "יובל", "password");
     res.send("hello");
 });
 
@@ -28,6 +28,21 @@ router.post("/login", async (req, res) => {
 router.get("/getMe", authenticateToken, async (req, res) => {
     const user = await UsersService.getUserById(req.user.id);
     user ? res.send(user) : res.sendStatus(401);
+});
+
+// ANCHOR create new teacher user
+router.get("/admin", async (req, res) => {
+    const userData = {
+        fisrtName: "אא",
+        lastName: "אא",
+        city: "א",
+        street: "א",
+        number: "3",
+        phoneNumber: "87",
+        email: "a@fk.com",
+    };
+    await UsersService.createNewUser(userData, "Admin");
+    res.sendStatus(200);
 });
 
 module.exports = router;

@@ -22,7 +22,6 @@ const createNewChild = async (data) => {
             first: data.firstName,
             last: data.LastName,
         },
-        profilePic: data.profilePic,
         birthDate: data.birthDate,
         school: new objectId(data.school),
         active: true,
@@ -31,4 +30,13 @@ const createNewChild = async (data) => {
     return child._id;
 };
 
-module.exports = { getChildNameAndPic, createNewChild, getChildrenNameAndPic };
+const updateChildPhoto = async (photo, childId) => {
+    return await ChildrenRepository.updateChildProfilePicById(photo, childId);
+};
+
+module.exports = {
+    getChildNameAndPic,
+    createNewChild,
+    getChildrenNameAndPic,
+    updateChildPhoto,
+};
