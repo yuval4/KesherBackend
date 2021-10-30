@@ -19,14 +19,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-const verifyParent = (req, res, next) => {
-    if (req.user.role === "Parent") {
-        next();
-    } else {
-        return res.sendStatus(401);
-    }
-};
-
 const verifyTeacher = (req, res, next) => {
     if (req.user.role === "Teacher") {
         next();
@@ -39,8 +31,9 @@ const verifyUser = (roles) => {
     return (req, res, next) => {
         if (roles.includes(req.user.role)) {
             next();
+        } else {
+            res.sendStatus(401);
         }
-        return res.sendStatus(401);
     };
 };
 

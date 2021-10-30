@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { authenticateToken, generateAccessToken } = require("../auth/auth");
+const {
+    authenticateToken,
+    generateAccessToken,
+    verifyUser,
+} = require("../auth/auth");
 const mailService = require("../mail/MailService");
 const UsersService = require("../services/UsersService");
 
@@ -31,7 +35,7 @@ router.get("/getMe", authenticateToken, async (req, res) => {
 });
 
 // ANCHOR create new teacher user
-router.get("/admin", async (req, res) => {
+router.get("/admin", verifyUser(["Admin"]), async (req, res) => {
     const userData = {
         fisrtName: "אא",
         lastName: "אא",

@@ -6,16 +6,20 @@ const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
 
-router.get("/:id", verifyUser(["Teacher"]), async (req, res) => {
+router.get("/:id", verifyUser(["Parent", "Teacher"]), async (req, res) => {
     console.log(req.params.id);
     const reports = await ReportsService.getChildReports(req.params.id);
     res.send(reports);
 });
 
-router.get("/latestreport/:id", async (req, res) => {
-    const report = await ReportsService.getChildLatestReport(req.params.id);
-    res.send(report);
-});
+router.get(
+    "/latestreport/:id",
+    verifyUser(["Parent", "Teacher"]),
+    async (req, res) => {
+        const report = await ReportsService.getChildLatestReport(req.params.id);
+        res.send(report);
+    }
+);
 
 router.post("/attendances", verifyUser(["Teacher"]), async (req, res) => {
     const childrenAttendance =
@@ -23,12 +27,12 @@ router.post("/attendances", verifyUser(["Teacher"]), async (req, res) => {
     res.send(childrenAttendance);
 });
 
-router.post("/newreport/:id", async (req, res) => {
+router.post("/newreport/:id", verifyUser(["Teacher"]), async (req, res) => {
     await ReportsService.createDailyReport([req.params.id]);
     res.sendStatus(200);
 });
 
-router.patch("/child/:id", async (req, res) => {
+router.patch("/child/:id", verifyUser(["Teacher"]), async (req, res) => {
     await ReportsService.updateChildAttendance(
         req.params.id,
         req.body.attendance
@@ -36,7 +40,7 @@ router.patch("/child/:id", async (req, res) => {
     res.sendStatus(200);
 });
 
-router.patch("/subreport/:id", async (req, res) => {
+router.patch("/subreport/:id", verifyUser(["Teacher"]), async (req, res) => {
     console.log(req.params.id, req.body.subReports);
     await ReportsService.addSubReportToReport(
         req.params.id,
@@ -46,20 +50,33 @@ router.patch("/subreport/:id", async (req, res) => {
     res.sendStatus(200);
 });
 
-router.patch("/comment/:reportId", async (req, res) => {
-    await ReportsService.addCommentToReport(
-        req.user.id,
-        req.user.role,
-        req.params.reportId,
-        req.body.comment
-    );
-    res.sendStatus(200);
-});
+router.patch(
+    "/comment/:reportId",
+    verifyUser(["Parent", "Teacher"]),
+    async (req, res) => {
+        await ReportsService.addCommentToReport(
+            req.user.id,
+            req.user.role,
+            req.params.reportId,
+            req.body.comment
+        );
+        res.sendStatus(200);
+    }
+);
 
-router.post("/image", upload.single("photo"), async (req, res) => {
-    req.body.profilePic = req.file.path;
-    await ReportsService.addImageToReport(req.body, req.user.id, req.user.role);
-    res.sendStatus(200);
-});
+router.post(
+    "/image",
+    verifyUser(["Parent", "Teacher"]),
+    upload.single("photo"),
+    async (req, res) => {
+        req.body.profilePic = req.file.path;
+        await ReportsService.addImageToReport(
+            req.body,
+            req.user.id,
+            req.user.role
+        );
+        res.sendStatus(200);
+    }
+);
 
 module.exports = router;
