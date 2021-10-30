@@ -6,7 +6,7 @@ const UsersService = require("../services/UsersService");
 
 router.get("/hello", (req, res) => {
     console.log("hello!!");
-    // mailService.sendWelcomeMail("didi19289@gmail.com", "יובל", "password");
+    mailService.sendWelcomeMail("didi19289@gmail.com", "יובל", "password");
     res.send("hello");
 });
 

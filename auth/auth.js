@@ -35,9 +35,17 @@ const verifyTeacher = (req, res, next) => {
     }
 };
 
+const verifyUser = (roles) => {
+    return (req, res, next) => {
+        if (roles.includes(req.user.role)) {
+            next();
+        }
+        return res.sendStatus(401);
+    };
+};
+
 module.exports = {
     generateAccessToken,
     authenticateToken,
-    verifyParent,
-    verifyTeacher,
+    verifyUser,
 };

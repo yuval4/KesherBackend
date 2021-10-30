@@ -15,7 +15,7 @@ const childSchema = new Schema({
         required: true,
     },
     profilePic: { type: String, default: image },
-    birthDate: { type: Date, required: true },
+    birthDate: { type: Date },
     school: { type: Schema.Types.ObjectId, ref: "School" },
     active: { type: Boolean, required: true, default: true },
 });

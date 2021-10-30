@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const ReportsService = require("../services/ReportsService");
-const { authenticateToken, verifyTeacher } = require("../auth/auth");
+const { authenticateToken, verifyUser } = require("../auth/auth");
 const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyUser(["Teacher"]), async (req, res) => {
     console.log(req.params.id);
     const reports = await ReportsService.getChildReports(req.params.id);
     res.send(reports);
@@ -17,7 +17,7 @@ router.get("/latestreport/:id", async (req, res) => {
     res.send(report);
 });
 
-router.post("/attendances", verifyTeacher, async (req, res) => {
+router.post("/attendances", verifyUser(["Teacher"]), async (req, res) => {
     const childrenAttendance =
         await ReportsService.getAndCreateChildrenAttendance(req.body.ids);
     res.send(childrenAttendance);
