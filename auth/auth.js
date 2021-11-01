@@ -29,7 +29,10 @@ const verifyTeacher = (req, res, next) => {
 
 const verifyUser = (roles) => {
     return (req, res, next) => {
-        if (roles.includes(req.user.role)) {
+        if (
+            roles.includes(req.user.role) &&
+            req.user.daysSinceChangePassword < 90
+        ) {
             next();
         } else {
             res.sendStatus(401);

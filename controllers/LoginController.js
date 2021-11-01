@@ -21,8 +21,13 @@ router.post("/login", async (req, res) => {
         req.body.data.email,
         req.body.data.password
     );
+
     token = user
-        ? generateAccessToken({ id: user._id, role: user.role })
+        ? generateAccessToken({
+              id: user._id,
+              role: user.role,
+              daysSinceChangePassword: user.daysSinceChangePassword,
+          })
         : null;
 
     token ? res.send(token) : res.sendStatus(401);

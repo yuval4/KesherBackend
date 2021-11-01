@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const objectId = mongoose.Types.ObjectId;
 
 const findUserById = async (id) => {
-    return await User.findById(id, "name children schools role email")
+    return await User.findById(
+        id,
+        "name children schools role email changePasswordDate"
+    )
         .populate("children", "name school profilePic")
         .populate("schools", "name")
         .lean();
@@ -12,7 +15,7 @@ const findUserById = async (id) => {
 const getUserByEmailAndPassword = async (email, password) => {
     return await User.findOne(
         { email: email, password: password },
-        "name children schools role"
+        "name children schools role changePasswordDate"
     );
 };
 
@@ -30,7 +33,7 @@ const changePassword = async (newPassword, userId) => {
         {
             _id: new objectId(userId),
         },
-        { password: newPassword }
+        { password: newPassword, changePasswordDate: new Date() }
     );
 };
 
@@ -49,7 +52,7 @@ const findAllStaffs = async () => {
     return await User.find(
         {
             role: {
-                $in: ["Teacher"],
+                $in: ["Teacher", "Therapist"],
             },
         },
         "name profilePic role"

@@ -6,10 +6,14 @@ const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
 
-router.get("/:id", verifyUser(["Parent", "Teacher"]), async (req, res) => {
-    const child = await ChildrenService.getChildNameAndPic(req.params.id);
-    res.send(child);
-});
+router.get(
+    "/:id",
+    verifyUser(["Parent", "Teacher", "Therapist"]),
+    async (req, res) => {
+        const child = await ChildrenService.getChildNameAndPic(req.params.id);
+        res.send(child);
+    }
+);
 
 router.post("/", verifyUser(["Teacher"]), async (req, res) => {
     const childId = await ChildrenService.createNewChild(req.body);

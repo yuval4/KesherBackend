@@ -45,7 +45,6 @@ const addSubReportToReport = async (id, subReports, creatorId) => {
             category: item.title,
             details: item.details,
         };
-        console.log(item.catrgory);
 
         await ReportsRepository.addSubReportToReportByChildId(
             id,

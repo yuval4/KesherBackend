@@ -11,7 +11,13 @@ router.post("/teacher", verifyUser(["Admin"]), async (req, res) => {
     res.sendStatus(200);
 });
 
-// ANCHOR create new teacher user
+// ANCHOR create new therapist user
+router.post("/therapist", verifyUser(["Admin"]), async (req, res) => {
+    await UsersService.createNewUser(req.body.data, "Therapist");
+    res.sendStatus(200);
+});
+
+// ANCHOR create new parent user
 router.post("/parent", verifyUser(["Teacher"]), async (req, res) => {
     await UsersService.createNewUser(req.body.data, "Parent");
     res.sendStatus(200);

@@ -33,6 +33,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     schools: [{ type: Schema.Types.ObjectId, ref: "School" }],
     children: [{ type: Schema.Types.ObjectId, ref: "Children" }],
+    changePasswordDate: { type: Date, default: new Date(0) },
     active: { type: Boolean, required: true, default: true },
 });
 

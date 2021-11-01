@@ -17,6 +17,10 @@ const childSchema = new Schema({
     profilePic: { type: String, default: image },
     birthDate: { type: Date },
     school: { type: Schema.Types.ObjectId, ref: "School" },
+    gender: {
+        type: String,
+        enum: ["Male", "Female"],
+    },
     active: { type: Boolean, required: true, default: true },
 });
 

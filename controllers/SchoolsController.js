@@ -5,7 +5,7 @@ const { authenticateToken, verifyUser } = require("../auth/auth");
 
 router.use(authenticateToken);
 
-router.get("/:id", verifyUser(["Teacher"]), async (req, res) => {
+router.get("/:id", verifyUser(["Teacher", "Therapist"]), async (req, res) => {
     const children = await SchoolsService.getChildrenBySchoolId(req.params.id);
     res.send(children);
 });

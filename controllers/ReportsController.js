@@ -6,11 +6,14 @@ const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
 
-router.get("/:id", verifyUser(["Parent", "Teacher"]), async (req, res) => {
-    console.log(req.params.id);
-    const reports = await ReportsService.getChildReports(req.params.id);
-    res.send(reports);
-});
+router.get(
+    "/:id",
+    verifyUser(["Parent", "Teacher", "Therapist"]),
+    async (req, res) => {
+        const reports = await ReportsService.getChildReports(req.params.id);
+        res.send(reports);
+    }
+);
 
 router.get(
     "/latestreport/:id",
@@ -27,10 +30,14 @@ router.post("/attendances", verifyUser(["Teacher"]), async (req, res) => {
     res.send(childrenAttendance);
 });
 
-router.post("/newreport/:id", verifyUser(["Teacher"]), async (req, res) => {
-    await ReportsService.createDailyReport([req.params.id]);
-    res.sendStatus(200);
-});
+router.post(
+    "/newreport/:id",
+    verifyUser(["Teacher", "Therapist"]),
+    async (req, res) => {
+        await ReportsService.createDailyReport([req.params.id]);
+        res.sendStatus(200);
+    }
+);
 
 router.patch("/child/:id", verifyUser(["Teacher"]), async (req, res) => {
     await ReportsService.updateChildAttendance(
@@ -40,19 +47,22 @@ router.patch("/child/:id", verifyUser(["Teacher"]), async (req, res) => {
     res.sendStatus(200);
 });
 
-router.patch("/subreport/:id", verifyUser(["Teacher"]), async (req, res) => {
-    console.log(req.params.id, req.body.subReports);
-    await ReportsService.addSubReportToReport(
-        req.params.id,
-        req.body.subReports,
-        req.user._id
-    );
-    res.sendStatus(200);
-});
+router.patch(
+    "/subreport/:id",
+    verifyUser(["Teacher", "Therapist"]),
+    async (req, res) => {
+        await ReportsService.addSubReportToReport(
+            req.params.id,
+            req.body.subReports,
+            req.user._id
+        );
+        res.sendStatus(200);
+    }
+);
 
 router.patch(
     "/comment/:reportId",
-    verifyUser(["Parent", "Teacher"]),
+    verifyUser(["Parent", "Teacher", "Therapist"]),
     async (req, res) => {
         await ReportsService.addCommentToReport(
             req.user.id,
@@ -66,7 +76,7 @@ router.patch(
 
 router.post(
     "/image",
-    verifyUser(["Parent", "Teacher"]),
+    verifyUser(["Parent", "Teacher", "Therapist"]),
     upload.single("photo"),
     async (req, res) => {
         req.body.profilePic = req.file.path;
