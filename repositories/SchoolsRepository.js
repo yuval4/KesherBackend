@@ -2,9 +2,19 @@ const mongoose = require("mongoose");
 const { School } = require("../models/SchoolModel");
 const objectId = mongoose.Types.ObjectId;
 
+// const findChildrenBySchoolId = async (id) => {
+//     return await School.findById(id, "children")
+//         .populate("children", "name profilePic active")
+//         .lean();
+// };
+
 const findChildrenBySchoolId = async (id) => {
     return await School.findById(id, "children")
-        .populate("children", "name profilePic")
+        .populate({
+            path: "children",
+            select: "name profilePic active",
+            match: { active: { $gte: true } },
+        })
         .lean();
 };
 

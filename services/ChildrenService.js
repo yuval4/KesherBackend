@@ -34,9 +34,14 @@ const updateChildPhoto = async (photo, childId) => {
     return await ChildrenRepository.updateChildProfilePicById(photo, childId);
 };
 
+const updateChildActive = async (id, isActive) => {
+    await ChildrenRepository.updateChildActiveByChildId(id, isActive);
+};
+
 module.exports = {
     getChildNameAndPic,
     createNewChild,
     getChildrenNameAndPic,
     updateChildPhoto,
+    updateChildActive,
 };

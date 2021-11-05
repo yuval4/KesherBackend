@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const ChildrenService = require("../services/ChildrenService");
-const { authenticateToken, verifyUser } = require("../auth/auth");
+const {
+    authenticateToken,
+    verifyUser,
+    verifyDaysSinceChangePassword,
+} = require("../auth/auth");
 const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
+router.use(verifyDaysSinceChangePassword);
 
 router.get(
     "/:id",
@@ -29,5 +34,10 @@ router.patch(
         res.sendStatus(200);
     }
 );
+
+router.patch("/active/:id", verifyUser(["Teacher"]), async (req, res) => {
+    await ChildrenService.updateChildActive(req.params.id, req.body.isActive);
+    res.sendStatus(200);
+});
 
 module.exports = router;

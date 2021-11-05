@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const ReportsService = require("../services/ReportsService");
-const { authenticateToken, verifyUser } = require("../auth/auth");
+const {
+    authenticateToken,
+    verifyUser,
+    verifyDaysSinceChangePassword,
+} = require("../auth/auth");
 const { upload } = require("../utils/utils");
 
 router.use(authenticateToken);
+router.use(verifyDaysSinceChangePassword);
 
 router.get(
     "/:id",

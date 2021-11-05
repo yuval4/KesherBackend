@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const objectId = mongoose.Types.ObjectId;
 
 const getNameAndPicById = async (id) => {
-    return await Child.findById(new objectId(id), "name profilePic");
+    return await Child.findById(new objectId(id), "name profilePic active");
 };
 
 const updateChildProfilePicById = async (photo, childId) => {
@@ -15,4 +15,17 @@ const updateChildProfilePicById = async (photo, childId) => {
     );
 };
 
-module.exports = { getNameAndPicById, updateChildProfilePicById };
+const updateChildActiveByChildId = async (id, isActive) => {
+    return await Child.findOneAndUpdate(
+        {
+            _id: new objectId(id),
+        },
+        { active: isActive }
+    );
+};
+
+module.exports = {
+    getNameAndPicById,
+    updateChildProfilePicById,
+    updateChildActiveByChildId,
+};

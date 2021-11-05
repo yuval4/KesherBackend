@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { validationMethod } = require("../utils/constants");
 
 const generateAccessToken = (user) => {
     return jwt.sign(user, process.env.TOKEN_SECRET);
@@ -30,8 +31,9 @@ const verifyTeacher = (req, res, next) => {
 const verifyUser = (roles) => {
     return (req, res, next) => {
         if (
-            roles.includes(req.user.role) &&
-            req.user.daysSinceChangePassword < 90
+            roles.includes(req.user.role)
+            //  &&
+            // req.user.daysSinceChangePassword < 90
         ) {
             next();
         } else {
@@ -40,8 +42,40 @@ const verifyUser = (roles) => {
     };
 };
 
+const verifyDaysSinceChangePassword = (req, res, next) => {
+    if (req.user.daysSinceChangePassword < 90) {
+        next();
+    } else {
+        return res.sendStatus(401);
+    }
+};
+
+const validateSchema = (schema, validationType) => {
+    return async (req, res, next) => {
+        if (validationMethod.body === validationType) {
+            try {
+                await schema.validateAsync(req.body);
+                next();
+            } catch (err) {
+                res.sendStatus(400);
+            }
+        } else if (validationMethod.param === validationType) {
+            try {
+                await schema.validateAsync(req.param);
+                next();
+            } catch (err) {
+                res.sendStatus(400);
+            }
+        } else {
+            console.log("forgot to pass validation type");
+        }
+    };
+};
+
 module.exports = {
     generateAccessToken,
     authenticateToken,
     verifyUser,
+    verifyDaysSinceChangePassword,
+    validateSchema,
 };

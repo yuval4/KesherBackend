@@ -69,6 +69,8 @@ const changePassword = async (passwords, user) => {
         passwords.newPassword === passwords.newPasswordAgain
     ) {
         await UsersRepository.changePassword(passwords.newPassword, user.id);
+    } else {
+        throw new Error("");
     }
 };
 

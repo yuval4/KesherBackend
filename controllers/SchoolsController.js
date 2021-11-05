@@ -1,14 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const SchoolsService = require("../services/SchoolsService");
-const { authenticateToken, verifyUser } = require("../auth/auth");
+const {
+    authenticateToken,
+    verifyUser,
+    verifyDaysSinceChangePassword,
+} = require("../auth/auth");
+const { roles } = require("../utils/constants");
 
 router.use(authenticateToken);
+router.use(verifyDaysSinceChangePassword);
 
-router.get("/:id", verifyUser(["Teacher", "Therapist"]), async (req, res) => {
-    const children = await SchoolsService.getChildrenBySchoolId(req.params.id);
-    res.send(children);
-});
+router.get(
+    "/:id",
+    verifyUser(["Teacher", "Therapist", roles.admin]),
+    async (req, res) => {
+        const children = await SchoolsService.getChildrenBySchoolId(
+            req.params.id
+        );
+        res.send(children);
+    }
+);
 
 router.post("/", verifyUser(["Admin"]), async (req, res) => {
     const schoolId = await SchoolsService.createNewSchool(req.body);

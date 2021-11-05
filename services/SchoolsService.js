@@ -26,7 +26,31 @@ const addChildToSchool = async (schoolId, childId) => {
 };
 
 const getEventsBySchoolId = async (id) => {
-    return await SchoolsRepository.findEventsBySchoolId(id);
+    const res = await SchoolsRepository.findEventsBySchoolId(id);
+    const events = [
+        { month: "January", data: [] },
+        { month: "February", data: [] },
+        { month: "March", data: [] },
+        { month: "April", data: [] },
+        { month: "May", data: [] },
+        { month: "June", data: [] },
+        { month: "July", data: [] },
+        { month: "August", data: [] },
+        { month: "September", data: [] },
+        { month: "October", data: [] },
+        { month: "November", data: [] },
+        { month: "December", data: [] },
+    ];
+    res.eventsBoard.forEach((event) => {
+        events[new Date(event.startTime).getMonth()].data.push(event);
+    });
+
+    events.forEach((month) => {
+        month.data.sort((a, b) =>
+            a.startTime.getDate() > b.startTime.getDate() ? 1 : -1
+        );
+    });
+    return events;
 };
 
 const addNewEventToSchool = async (schoolId, event, creatorId) => {
