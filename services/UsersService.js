@@ -10,8 +10,6 @@ const createNewUser = async (data, role) => {
         /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])([^\s-])(?=.*[a-z]).{8}$/
     ).gen();
 
-    mailService.sendWelcomeMail(data.email, data.fisrtName, password);
-
     let user = new User({
         name: {
             first: data.fisrtName,

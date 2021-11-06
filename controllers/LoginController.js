@@ -11,49 +11,14 @@ const UsersService = require("../services/UsersService");
 const { userLoginSchema } = require("../DTOs/Login.dto");
 const { validationMethod } = require("../utils/constants");
 
-// const sgMail = require("@sendgrid/mail");
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// router.get("/hello", (req, res) => {
-//     console.log("hello!!");
-//     const name = "yuval";
-//     const password = " f";
-//     const msg = {
-//         from: "kesherelwyn@gmail.com",
-//         to: "didi19289@gmail.com",
-//         subject: "ברוך הבא לאפליקציית קשר!",
-//         text: "",
-//         html: `<html><head><style>h1 {color:#804ED9;}</style></head><body> <h1>שלום ${name}, וברוכים הבאים לאפליקציית Kesher!<h1> <h3>הסיסמה שלך היא: ${password}</h3></body></html>`,
-//     };
-//     sgMail
-//         .send(msg)
-//         .then(() => {
-//             console.log("Email sent");
-//         })
-//         .catch((error) => {
-//             console.error(error);
-//         });
-//     // mailService.sendWelcomeMail("didi19289@gmail.com", "יובל", "password");
-//     res.send("hello");
+// router.get("/hello", async (req, res) => {
+//     mailService.sendWelcomeMail(
+//         "d9@gmail.com",
+//         "data.parentFirstName",
+//         "password"
+//     );
+//     res.sendStatus(200);
 // });
-
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-const msg = {
-    to: "didi19289@gmail.com", // Change to your recipient
-    from: "kesherelwyn@gmail.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-};
-
-router.get("/hello", async (req, res) => {
-    try {
-        await sgMail.send(msg);
-    } catch (error) {
-        console.error(error);
-    }
-});
 
 // ANCHOR checks if the user is exist by his email and password and creact a uniqu token. else, send 401 status.
 router.post(
