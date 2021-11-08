@@ -3,12 +3,17 @@ const { User } = require("../models/UserModel");
 const mailService = require("../mail/MailService");
 const mongoose = require("mongoose");
 const objectId = mongoose.Types.ObjectId;
-var RandExp = require("randexp");
+var generator = require("generate-password");
 
 const createNewUser = async (data, role) => {
-    const password = new RandExp(
-        /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])([^\s-])(?=.*[a-z]).{8}$/
-    ).gen();
+    const password = generator.generate({
+        length: 10,
+        numbers: true,
+        lowercase: true,
+        uppercase: true,
+        excludeSimilarCharacters: true,
+        strict: true,
+    });
 
     let user = new User({
         name: {
@@ -35,7 +40,7 @@ const createNewUser = async (data, role) => {
         user.schools.push(new objectId(data.schoolId));
     }
     user = await user.save();
-    mailService.sendWelcomeMail(data.email, data.parentFirstName, password);
+    mailService.sendWelcomeMail(data.email, data.fisrtName, password);
 };
 
 const getUserByEmailAndPassword = async (email, password) => {
@@ -43,8 +48,11 @@ const getUserByEmailAndPassword = async (email, password) => {
         email,
         password
     );
-    res.daysSinceChangePassword =
-        (new Date() - new Date(res.changePasswordDate)) / (1000 * 24 * 60 * 60);
+    if (res) {
+        res.daysSinceChangePassword =
+            (new Date() - new Date(res.changePasswordDate)) /
+            (1000 * 24 * 60 * 60);
+    }
 
     return res;
 };
