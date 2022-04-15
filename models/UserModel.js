@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const UsersRepository = require("../repositories/UsersRepository");
 
 const nameSchema = new Schema({
     first: String,
@@ -36,7 +35,7 @@ const userSchema = new Schema({
     schools: [{ type: Schema.Types.ObjectId, ref: "School" }],
     children: [{ type: Schema.Types.ObjectId, ref: "Children" }],
     changePasswordDate: { type: Date, default: new Date(0) },
-    lastPassword: { type: String },
+    lastPassword: { type: String, default: "" },
     active: { type: Boolean, required: true, default: true },
 });
 
@@ -48,7 +47,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.statics.login = async (email, password) => {
-    const user = await UsersRepository.getUserByEmail(email);
+    const user = await User.findOne({ email });
 
     if (user) {
         const auth = await bcrypt.compare(password, user.password);

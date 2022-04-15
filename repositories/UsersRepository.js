@@ -16,13 +16,6 @@ const getUserByEmail = async (email) => {
     return await User.findOne({ email: email });
 };
 
-const getUserByEmailAndPassword = async (email, password) => {
-    return await User.findOne(
-        { email: email, password: password },
-        "name children schools role changePasswordDate active"
-    );
-};
-
 const addSchoolToUserById = async (userId, schoolId) => {
     return await User.findOneAndUpdate(
         {
@@ -69,7 +62,6 @@ const findAllStaffs = async () => {
 
 module.exports = {
     findUserById,
-    getUserByEmailAndPassword,
     getUserByEmail,
     addSchoolToUserById,
     changePassword,

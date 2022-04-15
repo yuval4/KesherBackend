@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { validationMethod } = require("../utils/constants");
+const UsersRepository = require("../repositories/UsersRepository");
 
 const generateAccessToken = (user) => {
     return jwt.sign(user, process.env.TOKEN_SECRET);
@@ -13,10 +14,16 @@ const authenticateToken = (req, res, next) => {
         return res.sendStatus(401);
     }
 
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.TOKEN_SECRET, async (err, user) => {
         if (err) {
             return res.sendStatus(403);
         }
+
+        user = await UsersRepository.findUserById(user.id);
+        user.id = user._id;
+        user.daysSinceChangePassword =
+            (new Date() - new Date(user.changePasswordDate)) /
+            (1000 * 24 * 60 * 60);
 
         req.user = user;
 
@@ -43,7 +50,6 @@ const verifyUser = (roles) => {
 };
 
 const verifyDaysSinceChangePassword = (req, res, next) => {
-    console.log(req.user);
     if (req.user.daysSinceChangePassword < 90 && req.user.active) {
         next();
     } else {

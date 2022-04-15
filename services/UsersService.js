@@ -44,20 +44,6 @@ const createNewUser = async (data, role) => {
     mailService.sendWelcomeMail(data.email, data.fisrtName, password);
 };
 
-const getUserByEmailAndPassword = async (email, password) => {
-    const res = await UsersRepository.getUserByEmailAndPassword(
-        email,
-        password
-    );
-    if (res) {
-        res.daysSinceChangePassword =
-            (new Date() - new Date(res.changePasswordDate)) /
-            (1000 * 24 * 60 * 60);
-    }
-
-    return res;
-};
-
 const getUserById = async (id) => {
     return await UsersRepository.findUserById(id);
 };
@@ -69,20 +55,26 @@ const changePassword = async (passwords, user) => {
     if (!(await bcrypt.compare(passwords.oldPassword, isUser.password))) {
         throw new Error("user doesn't exist");
     } else if (
-        user.id == userInfo._id &&
+        String(user.id) === String(userInfo._id) &&
         passwords.newPassword === passwords.newPasswordAgain
     ) {
         if (
-            (await bcrypt.compare(
+            !(await bcrypt.compare(
                 passwords.newPassword,
                 isUser.lastPassword
             )) &&
             passwords.newPassword !== passwords.oldPassword
         ) {
-            const salt = await bcrypt.genSalt();
+            const newPassSalt = await bcrypt.genSalt();
             passwords.newPassword = await bcrypt.hash(
                 passwords.newPassword,
-                salt
+                newPassSalt
+            );
+
+            const oldPassSalt = await bcrypt.genSalt();
+            passwords.oldPassword = await bcrypt.hash(
+                passwords.oldPassword,
+                oldPassSalt
             );
 
             await UsersRepository.changePassword(
@@ -112,7 +104,6 @@ const addSchoolToUser = async (userId, schoolId) => {
 
 module.exports = {
     createNewUser,
-    getUserByEmailAndPassword,
     getUserById,
     changePassword,
     getUsersBySchoolId,
