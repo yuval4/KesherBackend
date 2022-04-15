@@ -9,10 +9,14 @@ const authenticateToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
-    if (token == null) return res.sendStatus(401);
+    if (token == null) {
+        return res.sendStatus(401);
+    }
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) {
+            return res.sendStatus(403);
+        }
 
         req.user = user;
 
@@ -30,11 +34,7 @@ const verifyTeacher = (req, res, next) => {
 
 const verifyUser = (roles) => {
     return (req, res, next) => {
-        if (
-            roles.includes(req.user.role)
-            //  &&
-            // req.user.daysSinceChangePassword < 90
-        ) {
+        if (roles.includes(req.user.role)) {
             next();
         } else {
             res.sendStatus(401);
@@ -43,7 +43,8 @@ const verifyUser = (roles) => {
 };
 
 const verifyDaysSinceChangePassword = (req, res, next) => {
-    if (req.user.daysSinceChangePassword < 90) {
+    console.log(req.user);
+    if (req.user.daysSinceChangePassword < 90 && req.user.active) {
         next();
     } else {
         return res.sendStatus(401);

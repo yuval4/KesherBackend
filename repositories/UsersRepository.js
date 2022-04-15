@@ -5,17 +5,21 @@ const objectId = mongoose.Types.ObjectId;
 const findUserById = async (id) => {
     return await User.findById(
         id,
-        "name children schools role email changePasswordDate"
+        "name children schools role email changePasswordDate active"
     )
         .populate("children", "name school profilePic")
         .populate("schools", "name")
         .lean();
 };
 
+const getUserByEmail = async (email) => {
+    return await User.findOne({ email: email });
+};
+
 const getUserByEmailAndPassword = async (email, password) => {
     return await User.findOne(
         { email: email, password: password },
-        "name children schools role changePasswordDate"
+        "name children schools role changePasswordDate active"
     );
 };
 
@@ -28,12 +32,16 @@ const addSchoolToUserById = async (userId, schoolId) => {
     );
 };
 
-const changePassword = async (newPassword, userId) => {
+const changePassword = async (oldPassword, newPassword, userId) => {
     await User.findOneAndUpdate(
         {
             _id: new objectId(userId),
         },
-        { password: newPassword, changePasswordDate: new Date() }
+        {
+            password: newPassword,
+            changePasswordDate: new Date(),
+            lastPassword: oldPassword,
+        }
     );
 };
 
@@ -44,7 +52,7 @@ const findUsersBySchoolId = async (schoolId) => {
                 $in: [objectId(schoolId)],
             },
         },
-        "name profilePic role"
+        "name profilePic role active"
     );
 };
 
@@ -55,13 +63,14 @@ const findAllStaffs = async () => {
                 $in: ["Teacher", "Therapist"],
             },
         },
-        "name profilePic role"
+        "name profilePic role active"
     );
 };
 
 module.exports = {
     findUserById,
     getUserByEmailAndPassword,
+    getUserByEmail,
     addSchoolToUserById,
     changePassword,
     findUsersBySchoolId,

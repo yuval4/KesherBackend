@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const UsersRepository = require("../repositories/UsersRepository");
 const { User } = require("../models/UserModel");
 const mailService = require("../mail/MailService");
@@ -63,20 +64,37 @@ const getUserById = async (id) => {
 
 const changePassword = async (passwords, user) => {
     const userInfo = await UsersRepository.findUserById(user.id);
-    const isUser = await UsersRepository.getUserByEmailAndPassword(
-        userInfo.email,
-        passwords.oldPassword
-    );
+    const isUser = await UsersRepository.getUserByEmail(userInfo.email);
 
-    if (
-        isUser &&
-        user.role === userInfo.role &&
+    if (!(await bcrypt.compare(passwords.oldPassword, isUser.password))) {
+        throw new Error("user doesn't exist");
+    } else if (
         user.id == userInfo._id &&
         passwords.newPassword === passwords.newPasswordAgain
     ) {
-        await UsersRepository.changePassword(passwords.newPassword, user.id);
+        if (
+            (await bcrypt.compare(
+                passwords.newPassword,
+                isUser.lastPassword
+            )) &&
+            passwords.newPassword !== passwords.oldPassword
+        ) {
+            const salt = await bcrypt.genSalt();
+            passwords.newPassword = await bcrypt.hash(
+                passwords.newPassword,
+                salt
+            );
+
+            await UsersRepository.changePassword(
+                passwords.oldPassword,
+                passwords.newPassword,
+                user.id
+            );
+        } else {
+            throw new Error("password cannot be like old passwords");
+        }
     } else {
-        throw new Error("");
+        throw new Error("error");
     }
 };
 

@@ -10,10 +10,15 @@ const {
 router.use(authenticateToken);
 
 // ANCHOR getMe requset gets the user token to vertified it end returns data about the user.
-router.get("/getMe", authenticateToken, async (req, res) => {
-    const user = await UsersService.getUserById(req.user.id);
-    user ? res.send(user) : res.sendStatus(401);
-});
+router.get(
+    "/getMe",
+    authenticateToken,
+    verifyDaysSinceChangePassword,
+    async (req, res) => {
+        const user = await UsersService.getUserById(req.user.id);
+        user ? res.send(user) : res.sendStatus(401);
+    }
+);
 
 // ANCHOR create new teacher user
 router.post(

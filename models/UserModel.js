@@ -1,5 +1,7 @@
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const UsersRepository = require("../repositories/UsersRepository");
 
 const nameSchema = new Schema({
     first: String,
@@ -34,8 +36,32 @@ const userSchema = new Schema({
     schools: [{ type: Schema.Types.ObjectId, ref: "School" }],
     children: [{ type: Schema.Types.ObjectId, ref: "Children" }],
     changePasswordDate: { type: Date, default: new Date(0) },
+    lastPassword: { type: String },
     active: { type: Boolean, required: true, default: true },
 });
+
+userSchema.pre("save", async function (next) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+
+    next();
+});
+
+userSchema.statics.login = async (email, password) => {
+    const user = await UsersRepository.getUserByEmail(email);
+
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password);
+
+        if (auth) {
+            return user;
+        }
+
+        throw Error("incorrect password");
+    }
+
+    throw Error("incorrect email");
+};
 
 const User = new mongoose.model("User", userSchema);
 module.exports = { User };
