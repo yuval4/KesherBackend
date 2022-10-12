@@ -49,7 +49,12 @@ const verifyUser = (roles) => {
 };
 
 const verifyDaysSinceChangePassword = (req, res, next) => {
-  if (req.user.daysSinceChangePassword < 90 && req.user.active) {
+  // if (req.user.daysSinceChangePassword < 90 && req.user.active) {
+  //   next();
+  // } else {
+  //   return res.sendStatus(401);
+  // }
+  if (req.user.active) {
     next();
   } else {
     return res.sendStatus(401);

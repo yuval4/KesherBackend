@@ -34,6 +34,7 @@ router.post("/login/google", async (req, res) => {
     )?.data?.email;
 
     if (!email) {
+      console.log("accessToken not valid");
       res.sendStatus(401);
     }
 
@@ -47,8 +48,14 @@ router.post("/login/google", async (req, res) => {
         })
       : null;
 
-    token ? res.send(token) : res.sendStatus(401);
+    if (token) {
+      res.send(token);
+    }
+
+    console.log("user doesn't exist on db");
+    res.sendStatus(401);
   } catch (error) {
+    console.log("==================", error);
     res.sendStatus(401);
   }
 });
