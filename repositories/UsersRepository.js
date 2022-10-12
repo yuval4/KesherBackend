@@ -1,6 +1,7 @@
 const { User } = require("../models/UserModel");
 const mongoose = require("mongoose");
 const objectId = mongoose.Types.ObjectId;
+const bcrypt = require("bcrypt");
 
 const findUserById = async (id) => {
   return await User.findById(
@@ -26,12 +27,15 @@ const addSchoolToUserById = async (userId, schoolId) => {
 };
 
 const changePassword = async (oldPassword, newPassword, userId) => {
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
   await User.findOneAndUpdate(
     {
       _id: new objectId(userId),
     },
     {
-      password: newPassword,
+      password: hashedPassword,
       changePasswordDate: new Date(),
       lastPassword: oldPassword,
     }
@@ -39,13 +43,24 @@ const changePassword = async (oldPassword, newPassword, userId) => {
 };
 
 const resetPassword = async (password, userId) => {
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const oldPassword = await User.findOne(
+    {
+      _id: new objectId(userId),
+    },
+    "lastPassword"
+  );
+
   await User.findOneAndUpdate(
     {
       _id: new objectId(userId),
     },
     {
-      password: password,
+      password: hashedPassword,
       changePasswordDate: new Date(0),
+      lastPassword: oldPassword.lastPassword,
     }
   );
 };

@@ -1,9 +1,9 @@
 const welcomeMail = (email, name, password) => {
-    return {
-        to: email,
-        from: process.env.MAIL,
-        subject: "ברוכים הבאים לאפליקציית קשר",
-        html: `<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+  return {
+    to: email,
+    from: process.env.MAIL,
+    subject: "ברוכים הבאים לאפליקציית קשר",
+    html: `<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
@@ -456,7 +456,7 @@ const welcomeMail = (email, name, password) => {
             </body>
         </html>
         `,
-    };
+  };
 };
 
 module.exports = { welcomeMail };

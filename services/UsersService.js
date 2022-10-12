@@ -20,7 +20,7 @@ const createNewUser = async (data, role) => {
       number: data.number,
     },
     phoneNumber: data.phoneNumber,
-    email: data.email,
+    email: data.email.trim().toLowerCase(),
     password: password,
     role: role,
     active: true,
@@ -42,21 +42,33 @@ const getUserById = async (id) => {
   return await UsersRepository.findUserById(id);
 };
 
-const forgetPassword = async (email, phoneNumber) => {
-  const isUser = await UsersRepository.getUserByEmail(email);
-  const password = generatePassword();
+const getUserByEmail = async (email) => {
+  return await UsersRepository.getUserByEmail(email.trim().toLowerCase());
+};
 
-  if (isUser && isUser.phoneNumber === phoneNumber) {
-    mailService.sendResetPasswordMail(email, isUser.fisrtName, password);
-    await UsersRepository.resetPassword(password, user._id);
+const forgetPassword = async (email, phoneNumber) => {
+  const isUser = await UsersRepository.getUserByEmail(
+    email.trim().toLowerCase()
+  );
+  const newPassword = generatePassword();
+
+  if (!isUser || isUser.phoneNumber !== phoneNumber) {
+    throw new Error("user doesn't exist");
   } else {
-    throw new Error("user does not exist");
+    await mailService.sendResetPasswordMail(
+      email.trim().toLowerCase(),
+      `${isUser.name.first} ${isUser.name.last}`,
+      newPassword
+    );
+    await UsersRepository.resetPassword(newPassword, isUser._id);
   }
 };
 
 const changePassword = async (passwords, user) => {
   const userInfo = await UsersRepository.findUserById(user.id);
-  const isUser = await UsersRepository.getUserByEmail(userInfo.email);
+  const isUser = await UsersRepository.getUserByEmail(
+    userInfo.email.trim().toLowerCase()
+  );
 
   if (!(await bcrypt.compare(passwords.oldPassword, isUser.password))) {
     throw new Error("user doesn't exist");
@@ -108,6 +120,7 @@ const addSchoolToUser = async (userId, schoolId) => {
 module.exports = {
   createNewUser,
   getUserById,
+  getUserByEmail,
   changePassword,
   getUsersBySchoolId,
   getAllstaffs,

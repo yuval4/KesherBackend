@@ -346,7 +346,7 @@ const resetPasswordMail = (email, name, password) => {
                                                                                                     </div>
      
                                                                                                     <div style="font-family: inherit; text-align: center;">
-                                                                                                        <span style="font-size: 20px; font-family: 'Assistant', sans-serif;">סיסמה: ${password}</span>
+                                                                                                        <span style="font-size: 20px; font-family: 'Assistant', sans-serif;">${password}</span>
                                                                                                     </div>
                                                                                                     <div></div>
                                                                                                 </div>

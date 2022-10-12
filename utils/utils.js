@@ -19,6 +19,7 @@ const generatePassword = () =>
     numbers: true,
     lowercase: true,
     uppercase: true,
+    symbols: true,
     excludeSimilarCharacters: true,
     strict: true,
   });
