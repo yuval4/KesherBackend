@@ -96,4 +96,4 @@ module.exports = {
   findUsersBySchoolId,
   findAllStaffs,
   resetPassword,
-};
+}
