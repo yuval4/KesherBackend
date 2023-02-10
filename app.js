@@ -26,9 +26,10 @@ app.use("/children", childrenController);
 app.use("/schools", schoolsController);
 app.use("/reports", reportsController);
 app.use("/users", usersController);
+app.use("/privacyPolicy", express.static("public/PrivacyPolicy.pdf"));
 
 app.all("*", (req, res, next) => {
-    res.sendStatus(404);
+  res.sendStatus(404);
 });
 
 module.exports = app;
