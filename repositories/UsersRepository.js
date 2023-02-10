@@ -76,6 +76,7 @@ const findUsersBySchoolId = async (schoolId) => {
   );
 };
 
+
 const findAllStaffs = async () => {
   return await User.find(
     {
@@ -95,4 +96,4 @@ module.exports = {
   findUsersBySchoolId,
   findAllStaffs,
   resetPassword,
-};
+}
